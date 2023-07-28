@@ -7,15 +7,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class TaskTracker {
-    HashMap<Long, Epic> epics = new HashMap<>();
-    HashMap<Long,Subtask> subtasks = new HashMap<>();
-    HashMap<Long,Task> tasks = new HashMap<>();
-    private long generatorId = 1;
+   private HashMap<Long, Epic> epics = new HashMap<>();
+   private HashMap<Long,Subtask> subtasks = new HashMap<>();
+   private HashMap<Long,Task> tasks = new HashMap<>();
+
 
 
     public long addNewEpic(Epic epic){
-         long id = generateId();
-         epic.setId(id);
+         long id = epic.getId();
          epics.put(id,epic);
 
          return id;
@@ -26,8 +25,7 @@ public class TaskTracker {
             return null;
         }
 
-        long id = generateId();
-        subtask.setId(id);
+        long id = subtask.getId();
         subtasks.put(id,subtask);
         epic.addSubtaskId(subtask.getId());
         updateStatusEpic(subtask.getEpicId());
@@ -36,8 +34,7 @@ public class TaskTracker {
     }
 
     public Long addTask(Task task){
-        long id = generateId();
-        task.setId(id);
+        long id = task.getId();
         tasks.put(id,task);
 
         return id;
@@ -68,7 +65,7 @@ public class TaskTracker {
         epics.put(epic.getId(),epic);
     }
 
-    public void updateStatusEpic(long epicId){
+    private void updateStatusEpic(long epicId){
         Epic epic = epics.get(epicId);
         ArrayList<Long> subtaskIds = epic.getSubtaskIds();
         if(subtaskIds.isEmpty()){
@@ -172,7 +169,4 @@ public class TaskTracker {
 
     }
 
-    private long generateId(){
-        return generatorId++;
-    }
 }
