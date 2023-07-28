@@ -20,17 +20,17 @@ public class Main {
         Epic epic3 =  new Epic("Эпик 3 ","Нужно ");
         long epic3Id  = taskTracker.addNewEpic(epic3);
 
-        Subtask subtask1 = new Subtask("Subtask1 создания ","Написать что то ","NEW",epic1Id);
+        Subtask subtask1 = new Subtask("Subtask1 создания ","Написать что то ",epic1Id);
         Long subtaskId1 = taskTracker.addSubtask(subtask1);
-        Subtask subtask2 = new Subtask("Subtask2 создания ","Написать что то ","IN_PROGRESS",epic1Id);
+        Subtask subtask2 = new Subtask("Subtask2 создания ","Написать что то ",epic1Id);
         Long subtaskId2 = taskTracker.addSubtask(subtask2);
-        Subtask subtask3 = new Subtask("Subtask3 создания ","Написать  ","DONE",epic2Id);
+        Subtask subtask3 = new Subtask("Subtask3 создания ","Написать  ",epic2Id);
         Long subtaskId3 = taskTracker.addSubtask(subtask3);
-        Subtask subtask4 = new Subtask("Subtask4 создания ","Написать  ","DONE",epic2Id);
+        Subtask subtask4 = new Subtask("Subtask4 создания ","Написать  ",epic2Id);
         Long subtaskId4 = taskTracker.addSubtask(subtask4);
-        Subtask subtask5 = new Subtask("Subtask5 создания ","Написать  ","NEW",epic3Id);
+        Subtask subtask5 = new Subtask("Subtask5 создания ","Написать  ",epic3Id);
         Long subtaskId5 = taskTracker.addSubtask(subtask5);
-        Subtask subtask6 = new Subtask("Subtask6 создания ","Написать  ","NEW",epic3Id);
+        Subtask subtask6 = new Subtask("Subtask6 создания ","Написать  ",epic3Id);
         Long subtaskId6 = taskTracker.addSubtask(subtask6);
 
 

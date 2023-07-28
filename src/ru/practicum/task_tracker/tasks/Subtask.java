@@ -2,7 +2,7 @@ package ru.practicum.task_tracker.tasks;
 
 public class Subtask extends Task {
    private Long epicId;
-    public Subtask(String name, String desc, String status,Long epicId) {
+    public Subtask(String name, String desc,Long epicId) {
         super(name, desc);
         this.epicId = epicId;
     }
