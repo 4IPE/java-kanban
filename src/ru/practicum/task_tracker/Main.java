@@ -9,7 +9,7 @@ public class Main {
 
     public static void main(String[] args) {
         TaskTracker taskTracker = new TaskTracker();
-        Task task1  = new Task("Таск 1","Ну какой то таск ","NEW");
+        Task task1  = new Task("Таск 1","Ну какой то таск ");
         taskTracker.addTask(task1);
 
 
