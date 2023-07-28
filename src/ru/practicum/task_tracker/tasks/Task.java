@@ -1,21 +1,28 @@
 package ru.practicum.task_tracker.tasks;
 
 public class Task {
-    protected String name ;
     protected long id;
+    protected String name ;
     protected String desc;
     protected  String status;
-    public Task(String name, String desc, String status){
+    private static long count=0;
+
+    public Task(String name, String desc){
         this.name =name;
         this.desc = desc;
-        this.status = status;
+        this.status = "NEW";
+        this.id=generateId();
+    }
+    private long generateId(){
 
+        return ++count;
     }
 
     @Override
     public String toString() {
         return "Task{" +
-                "name='" + name + '\'' +
+                "id=" + id +
+                ", name='" + name + '\'' +
                 ", desc='" + desc + '\'' +
                 ", status='" + status + '\'' +
                 '}';
@@ -46,10 +53,13 @@ public class Task {
     }
 
     public String getStatus() {
+
         return status;
     }
 
     public void setStatus(String status) {
+
         this.status = status;
     }
+
 }
