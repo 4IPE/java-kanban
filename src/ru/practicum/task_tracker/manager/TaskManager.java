@@ -11,7 +11,7 @@ public interface TaskManager {
      List<Task> getHistory();
 
 
-    long addNewEpic(Epic epic);
+    Long addNewEpic(Epic epic);
     Long addSubtask(Subtask subtask);
     Long addTask(Task task);
 
