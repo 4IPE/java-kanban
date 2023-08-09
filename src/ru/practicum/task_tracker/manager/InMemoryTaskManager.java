@@ -91,8 +91,8 @@ public class InMemoryTaskManager implements TaskManager {
                 status = subtask.getStatus();
                 continue;
             }
-            if (status.equals(subtask.getStatus())
-                    && !status.equals(String.valueOf(TaskStatus.IN_PROGRESS))){
+            if (status==subtask.getStatus()
+                    && status!=TaskStatus.IN_PROGRESS){
                 continue;
             }
 
