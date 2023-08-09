@@ -1,5 +1,7 @@
 package ru.practicum.task_tracker.tasks;
 
+import ru.practicum.task_tracker.enumereits.TaskStatus;
+
 public class Task {
     protected long id;
     protected String name ;
@@ -10,7 +12,7 @@ public class Task {
     public Task(String name, String desc){
         this.name =name;
         this.desc = desc;
-        this.status = "NEW";
+        this.status = String.valueOf(TaskStatus.NEW);
         this.id=generateId();
     }
     private long generateId(){
