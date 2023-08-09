@@ -21,7 +21,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public long addNewEpic(Epic epic){
+    public Long addNewEpic(Epic epic){
         long id = epic.getId();
         epics.put(id,epic);
 
