@@ -78,11 +78,11 @@ public class InMemoryTaskManager implements TaskManager {
         Epic epic = epics.get(epicId);
         ArrayList<Long> subtaskIds = epic.getSubtaskIds();
         if(subtaskIds.isEmpty()){
-            epic.setStatus(String.valueOf(TaskStatus.NEW));
+            epic.setStatus(TaskStatus.NEW);
             return;
         }
 
-        String status = null;
+        TaskStatus status = null;
         for (long subtaskId: subtaskIds){
             Subtask subtask = subtasks.get(subtaskId);
 
@@ -96,7 +96,7 @@ public class InMemoryTaskManager implements TaskManager {
                 continue;
             }
 
-            epic.setStatus(String.valueOf(TaskStatus.IN_PROGRESS));
+            epic.setStatus(TaskStatus.IN_PROGRESS);
             return;
         }
         epic.setStatus(status);
