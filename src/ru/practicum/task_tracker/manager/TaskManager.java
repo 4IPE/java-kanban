@@ -22,9 +22,9 @@ public interface TaskManager {
     void updateStatusEpic(long epicId);
 
 
-     Task gettingByIndexTask(long id);
-     Epic gettingByIndexEpic(long id);
-     Subtask gettingByIndexSubtask(long id);
+     Task getTaskById(long id);
+     Epic getEpicById(long id);
+     Subtask getSubtaskById(long id);
      ArrayList<Subtask> gettingSubtaskFromEpic(long epicId);
 
 
