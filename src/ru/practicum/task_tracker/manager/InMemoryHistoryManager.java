@@ -8,11 +8,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class InMemoryHistoryManager implements HistoryManager{
-    /*private final List<Task> history = new ArrayList<>();*/
     private final Map<Long,Node> nodeMap = new HashMap<>();
     private Node first;
     private Node last;
-    private static final int LIMIT = 10;
 
     @Override
     public void addTask(Task task) {
@@ -22,7 +20,6 @@ public class InMemoryHistoryManager implements HistoryManager{
 
        long id  = task.getId();
        remove(id);
-
        linkLast(task);
        nodeMap.put(id,last);
     }
