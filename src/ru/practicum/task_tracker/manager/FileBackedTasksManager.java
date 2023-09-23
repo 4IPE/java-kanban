@@ -8,6 +8,7 @@ import ru.practicum.task_tracker.tasks.Task;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
@@ -16,7 +17,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     public void save(){
         try(FileWriter fileWriter = new FileWriter("test.txt")){
-            fileWriter.write("id,type,name,status,description,epicID\n");
+            fileWriter.write("id,type,name,status,description,epic\n");
             for(Task task :getTasksVal()){
                 fileWriter.write(CSVFormatter.toString(task));
                 fileWriter.write("\n");
@@ -41,52 +42,38 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         try(FileReader fileReader = new FileReader(file.getPath())){
             BufferedReader bufferedReader = new BufferedReader(fileReader);
             while (bufferedReader.ready()){
-                String[]lineAr = bufferedReader.readLine().split(",");
-                for(String element:lineAr ){
-                 if(element.equals(TaskType.TASK)){
-                     Task task = new Task(lineAr[2],lineAr[4]);
-                     task.setId(Integer.parseInt(lineAr[0]));
-                     task.setStatus(TaskStatus.valueOf(lineAr[3]));
-                     taskManager.addTask(task);
-                 }
-                 if(element.equals(TaskType.EPIC)){
-                        Epic epic = new Epic(lineAr[2],lineAr[4]);
-                        epic.setId(Integer.parseInt(lineAr[0]));
-                        epic.setStatus(TaskStatus.valueOf(lineAr[3]));
-                        taskManager.addNewEpic(epic);
-                 }
-                 if(element.equals(TaskType.SUBTASK)){
-                     Subtask subtask = new Subtask(lineAr[2],lineAr[4],Long.parseLong(lineAr[5]));
-                     subtask.setId(Integer.parseInt(lineAr[0]));
-                     subtask.setStatus(TaskStatus.valueOf(lineAr[3]));
-                     taskManager.addSubtask(subtask);
-                 }
+                if(!bufferedReader.readLine().equals("id,type,name,status,description,epic")){
+                    CSVFormatter.fromString(bufferedReader.readLine());
+                }
                  if(bufferedReader.readLine().isBlank()){
+                     List<Integer> idAr = CSVFormatter.historyFromString(bufferedReader.readLine());
                      HistoryManager historyManager = new InMemoryHistoryManager();
                      FileBackedTasksManager fileBackedTasksManager = new FileBackedTasksManager(file);
-                     for(int i =0;i<lineAr.length;i++){
-                         Task task = fileBackedTasksManager.getTasks().get(Long.parseLong(lineAr[i]));
-                         Epic epic = fileBackedTasksManager.getEpics().get(Long.parseLong(lineAr[i]));
-                         Subtask subtask = fileBackedTasksManager.getSubtasks().get(Long.parseLong(lineAr[i]));
-                         if(task!=null){
-                             historyManager.addTask(task);
-                         }
-                         if (epic!=null){
-                             historyManager.addTask(epic);
-                         }
-                         if (subtask!=null){
-                             historyManager.addTask(subtask);
+                    if(idAr!=null) {
+                         for (Integer id : idAr) {
+                             Task task = fileBackedTasksManager.getTasks().get(id);
+                             Epic epic = fileBackedTasksManager.getEpics().get(id);
+                             Subtask subtask = fileBackedTasksManager.getSubtasks().get(id);
+                             if (task != null) {
+                                 historyManager.addTask(task);
+                             }
+                             if (epic != null) {
+                                 historyManager.addTask(epic);
+                             }
+                             if (subtask != null) {
+                                 historyManager.addTask(subtask);
+                             }
                          }
                      }
                  }
-                }
-
             }
 
-        } catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e){
             throw new RuntimeException(e);
+
         } catch (IOException e) {
             throw new RuntimeException(e);
+
         }
         return new FileBackedTasksManager(file);
     }

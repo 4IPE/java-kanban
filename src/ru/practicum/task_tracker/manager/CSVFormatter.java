@@ -61,11 +61,14 @@ public class CSVFormatter {
         return sb.toString();
     }
     public static List<Integer> historyFromString(String historyStr){
-        String [] historyMas = historyStr.split(",");
-        List<Integer> historyArr = new ArrayList<>();
-        for (String element : historyMas) {
-            historyArr.add(Integer.parseInt(element));
+        if(historyStr.isBlank()){
+            String[] historyMas = historyStr.split(",");
+            List<Integer> historyArr = new ArrayList<>();
+            for (String element : historyMas) {
+                historyArr.add(Integer.parseInt(element));
+            }
+            return historyArr;
         }
-        return historyArr;
+        return null;
     }
 }
