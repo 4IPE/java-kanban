@@ -2,6 +2,8 @@ package ru.practicum.task_tracker.tasks;
 
 import ru.practicum.task_tracker.enumereits.TaskStatus;
 
+import java.util.Objects;
+
 public class Task {
     protected long id;
     protected String name ;

@@ -15,6 +15,35 @@ public class InMemoryTaskManager implements TaskManager {
     private final HashMap<Long,Task> tasks = new HashMap<>();
     private final HistoryManager historyManager = Manager.getDefaultHistoryManager();
 
+
+    public List<Epic> getEpicsVal() {
+        return new ArrayList<>(epics.values());
+    }
+
+    public List<Subtask> getSubtasksVal() {
+        return new ArrayList<>(subtasks.values());
+    }
+
+    public List<Task> getTasksVal() {
+        return new ArrayList<>(tasks.values());
+    }
+
+    public HashMap<Long, Epic> getEpics() {
+        return epics;
+    }
+
+    public HashMap<Long, Subtask> getSubtasks() {
+        return subtasks;
+    }
+
+    public HashMap<Long, Task> getTasks() {
+        return tasks;
+    }
+
+    public HistoryManager getHistoryManager() {
+        return historyManager;
+    }
+
     @Override
     public List<Task> getHistory() {
         return historyManager.getHistory();
