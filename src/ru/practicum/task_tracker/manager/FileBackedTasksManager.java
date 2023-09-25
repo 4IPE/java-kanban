@@ -12,9 +12,9 @@ import java.util.List;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
 
+   private final File file;
 
-
-    public void save(){
+    private void save(){
         try(FileWriter fileWriter = new FileWriter("test.txt")){
             fileWriter.write("id,type,name,status,description,epic\n");
             for(Task task :getTasksVal()){
@@ -74,11 +74,11 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             throw new RuntimeException(e);
 
         }
-        return new FileBackedTasksManager(file);
+        return (FileBackedTasksManager) taskManager;
     }
 
     public FileBackedTasksManager(File file){
-
+        this.file = file;
     }
 
     @Override
@@ -138,5 +138,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         boolean subEquals = getSubtasks().equals(o.getSubtasks());
         if(taskEquals&&epicEquals&&subEquals) return true;
         return false;
+    }
+
+    public File getFile() {
+        return file;
     }
 }

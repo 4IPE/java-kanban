@@ -32,7 +32,7 @@ public class FileBackedTasksManagerTest {
         tasksManager1.getEpicById(4);
 
         FileBackedTasksManager tasksManager2 = FileBackedTasksManager.loadFromFile(file);
-        System.out.println(tasksManager1.equals(tasksManager2));
+
 
     }
 }
