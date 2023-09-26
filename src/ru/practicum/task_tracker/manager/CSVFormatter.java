@@ -8,6 +8,7 @@ import ru.practicum.task_tracker.tasks.Task;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
 
 public class CSVFormatter {
 
@@ -26,6 +27,7 @@ public class CSVFormatter {
     }
 
     public static Task fromString(String taskStr){
+        TaskManager taskManager = Manager.getDefault();
         String[] tokens = taskStr.split(",");
         long id = Long.parseLong(tokens[0]);
         TaskType type = TaskType.valueOf(tokens[1]);
@@ -37,7 +39,7 @@ public class CSVFormatter {
                 Task task = new Task(name,desc);
                 task.setId(id);
                 task.setStatus(status);
-                return new Task(name,desc);
+                return task;
             case EPIC:
                 Epic epic =  new Epic(name,desc);
                 epic.setId(id);
@@ -54,14 +56,15 @@ public class CSVFormatter {
 
     public static String historyToString(HistoryManager manager){
         List<Task> historyCheck = manager.getHistory();
-        StringBuilder sb = new StringBuilder();
+        StringJoiner strHis = new StringJoiner(",");
         for(Task task :historyCheck){
-            sb.append(task.getId()).append(",");
+            strHis.add(String.valueOf(task.getId()));
         }
-        return sb.toString();
+        return strHis.toString();
+
     }
     public static List<Integer> historyFromString(String historyStr){
-        if(historyStr.isBlank()){
+        if(!historyStr.isBlank()){
             String[] historyMas = historyStr.split(",");
             List<Integer> historyArr = new ArrayList<>();
             for (String element : historyMas) {

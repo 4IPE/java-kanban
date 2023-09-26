@@ -1,10 +1,13 @@
 package ru.practicum.task_tracker.tasks;
 
+import ru.practicum.task_tracker.enumereits.TaskType;
+
 public class Subtask extends Task {
    private Long epicId;
     public Subtask(String name, String desc,Long epicId) {
         super(name, desc);
         this.epicId = epicId;
+        this.type = TaskType.SUBTASK;
     }
 
     @Override

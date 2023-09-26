@@ -1,12 +1,14 @@
 package ru.practicum.task_tracker.manager;
 
 
+import ru.practicum.task_tracker.enumereits.TaskType;
 import ru.practicum.task_tracker.tasks.Epic;
 import ru.practicum.task_tracker.tasks.Subtask;
 import ru.practicum.task_tracker.tasks.Task;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -15,22 +17,22 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
    private final File file;
 
     private void save(){
-        try(FileWriter fileWriter = new FileWriter("test.txt")){
+        try(FileWriter fileWriter = new FileWriter(file)){
             fileWriter.write("id,type,name,status,description,epic\n");
             for(Task task :getTasksVal()){
-                fileWriter.write(CSVFormatter.toString(task));
-                fileWriter.write("\n");
+                fileWriter.write(CSVFormatter.toString(task)+"\n");
+
             }
             for(Task task :getEpicsVal()){
-                fileWriter.write(CSVFormatter.toString(task));
-                fileWriter.write("\n");
+                fileWriter.write(CSVFormatter.toString(task)+"\n");
+
             }
             for(Task task :getSubtasksVal()){
-                fileWriter.write(CSVFormatter.toString(task));
-                fileWriter.write("\n");
+                fileWriter.write(CSVFormatter.toString(task)+"\n");
+
             }
             fileWriter.write("\n");
-            fileWriter.write(CSVFormatter.historyToString(getHistoryManager()));
+            fileWriter.write(CSVFormatter.historyToString(getHistoryManager())+"\n");
         }
         catch (IOException exp){
             exp.getMessage();
@@ -41,27 +43,30 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         try(FileReader fileReader = new FileReader(file.getPath())){
             BufferedReader bufferedReader = new BufferedReader(fileReader);
             while (bufferedReader.ready()){
-                if(!bufferedReader.readLine().equals("id,type,name,status,description,epic")){
-                    CSVFormatter.fromString(bufferedReader.readLine());
+                String line = bufferedReader.readLine();
+                if(!line.equals("id,type,name,status,description,epic")
+                        &&!line.isBlank()){
+                      var lineConvert = CSVFormatter.fromString(line);
+                      if(lineConvert.getType().equals(TaskType.TASK)){
+                          taskManager.addTask(lineConvert);
+                      }
+                      if(lineConvert.getType().equals(TaskType.EPIC)){
+                          taskManager.addNewEpic((Epic) lineConvert);
+                      }
+                      if(lineConvert.getType().equals(TaskType.SUBTASK)){
+                          taskManager.addSubtask((Subtask)lineConvert);
+                      }
+
                 }
-                 if(bufferedReader.readLine().isBlank()){
+                 if(line.isBlank()){
                      List<Integer> idAr = CSVFormatter.historyFromString(bufferedReader.readLine());
-                     HistoryManager historyManager = new InMemoryHistoryManager();
-                     FileBackedTasksManager fileBackedTasksManager = new FileBackedTasksManager(file);
+                     Collections.reverse(idAr);
                     if(idAr!=null) {
                          for (Integer id : idAr) {
-                             Task task = fileBackedTasksManager.getTasks().get(id);
-                             Epic epic = fileBackedTasksManager.getEpics().get(id);
-                             Subtask subtask = fileBackedTasksManager.getSubtasks().get(id);
-                             if (task != null) {
-                                 historyManager.addTask(task);
-                             }
-                             if (epic != null) {
-                                 historyManager.addTask(epic);
-                             }
-                             if (subtask != null) {
-                                 historyManager.addTask(subtask);
-                             }
+                             taskManager.getTaskById(id);
+                             taskManager.getEpicById(id);
+                             taskManager.getSubtaskById(id);
+
                          }
                      }
                  }
@@ -131,16 +136,22 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj==null) return false;
+        if(obj==null) {
+            return false;
+        }
         FileBackedTasksManager o = (FileBackedTasksManager) obj;
         boolean taskEquals = getTasks().equals(o.getTasks());
         boolean epicEquals = getEpics().equals(o.getEpics());
         boolean subEquals = getSubtasks().equals(o.getSubtasks());
-        if(taskEquals&&epicEquals&&subEquals) return true;
+
+        if(taskEquals&&epicEquals&&subEquals) {
+            return true;
+        }
         return false;
     }
 
     public File getFile() {
         return file;
     }
+
 }

@@ -6,9 +6,10 @@ import ru.practicum.task_tracker.tasks.Task;
 
 import java.io.File;
 
+
 public class FileBackedTasksManagerTest {
     public static void main(String[] args){
-        File file =new File("test.txt");
+        File file =new File("test1.txt");
         FileBackedTasksManager tasksManager1 = new FileBackedTasksManager(file);
 
         Task task1  = new Task("Таск 1","Ну какой то таск");
@@ -27,12 +28,11 @@ public class FileBackedTasksManagerTest {
         Long subtaskId1 = tasksManager1.addSubtask(subtask1);
         Subtask subtask2 = new Subtask("Subtask2 создания","Написать что то",epic1Id);
         Long subtaskId2 = tasksManager1.addSubtask(subtask2);
+
         tasksManager1.getTaskById(1);
         tasksManager1.getEpicById(3);
         tasksManager1.getEpicById(4);
 
         FileBackedTasksManager tasksManager2 = FileBackedTasksManager.loadFromFile(file);
-
-
     }
 }
