@@ -6,12 +6,13 @@ import ru.practicum.task_tracker.tasks.Epic;
 import ru.practicum.task_tracker.tasks.Subtask;
 import ru.practicum.task_tracker.tasks.Task;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
 
 public class CSVFormatter {
-
+    private final static DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
     private CSVFormatter(){}
     public static String toString(Task task){
          String name =  task.getName();
@@ -19,34 +20,37 @@ public class CSVFormatter {
          String desc = task.getDesc();
          String status = String.valueOf(task.getStatus());
          String type = String.valueOf(TaskType.valueOf(task.getClass().getSimpleName().toUpperCase()));
+         String time = task.getStartTime().format(FORMATTER);
+         String duration = String.valueOf(task.getDuration());
         if(task instanceof Subtask) {
             long epicId = ((Subtask) task).getEpicId();
-            return String.join(",",id,type,name,status,desc,String.valueOf(epicId));
+            return String.join(",",id,type,name,status,desc,time,duration,String.valueOf(epicId));
         }
-         return String.join(",",id,type,name,status,desc);
+         return String.join(",",id,type,name,status,desc,time,duration);
     }
 
     public static Task fromString(String taskStr){
-        TaskManager taskManager = Manager.getDefault();
         String[] tokens = taskStr.split(",");
         long id = Long.parseLong(tokens[0]);
         TaskType type = TaskType.valueOf(tokens[1]);
         String name =tokens[2];
         TaskStatus status = TaskStatus.valueOf(tokens[3]);
         String desc = tokens[4];
+        String startTime = tokens[5];
+        int duration =Integer.parseInt( tokens[6]);
         switch (type){
             case TASK:
-                Task task = new Task(name,desc);
+                Task task = new Task(name,desc,startTime,duration);
                 task.setId(id);
                 task.setStatus(status);
                 return task;
             case EPIC:
-                Epic epic =  new Epic(name,desc);
+                Epic epic =  new Epic(name,desc,startTime,duration);
                 epic.setId(id);
                 epic.setStatus(status);
                 return  epic;
             case SUBTASK:
-                Subtask subtask = new Subtask(name,desc,Long.parseLong(tokens[5]));
+                Subtask subtask = new Subtask(name,desc,Long.parseLong(tokens[7]),startTime,duration);
                 subtask.setId(id);
                 subtask.setStatus(status);
                 return subtask;

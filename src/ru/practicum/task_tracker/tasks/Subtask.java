@@ -4,8 +4,8 @@ import ru.practicum.task_tracker.enumereits.TaskType;
 
 public class Subtask extends Task {
    private Long epicId;
-    public Subtask(String name, String desc,Long epicId) {
-        super(name, desc);
+    public Subtask(String name, String desc,Long epicId,String startTime,int duration) {
+        super(name, desc,startTime,duration);
         this.epicId = epicId;
         this.type = TaskType.SUBTASK;
     }

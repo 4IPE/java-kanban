@@ -4,9 +4,10 @@ import ru.practicum.task_tracker.enumereits.TaskStatus;
 import ru.practicum.task_tracker.tasks.Epic;
 import ru.practicum.task_tracker.tasks.Subtask;
 import ru.practicum.task_tracker.tasks.Task;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 
 
 public class InMemoryTaskManager implements TaskManager {
@@ -28,16 +29,33 @@ public class InMemoryTaskManager implements TaskManager {
         return new ArrayList<>(tasks.values());
     }
 
+
+    @Override
     public HashMap<Long, Epic> getEpics() {
         return epics;
     }
-
+    @Override
     public HashMap<Long, Subtask> getSubtasks() {
         return subtasks;
     }
-
+    @Override
     public HashMap<Long, Task> getTasks() {
         return tasks;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        InMemoryTaskManager that = (InMemoryTaskManager) o;
+        return Objects.equals(epics, that.epics) && Objects.equals(subtasks, that.subtasks) && Objects.equals(tasks, that.tasks);
+    }
+
+
+    @Override
+    public Set<Task> getPrioritizedTasks(){
+        return historyManager.getPrioritizedTasks();
     }
 
     public HistoryManager getHistoryManager() {
@@ -53,8 +71,41 @@ public class InMemoryTaskManager implements TaskManager {
     public Long addNewEpic(Epic epic){
         long id = epic.getId();
         epics.put(id,epic);
-
         return id;
+    }
+
+    @Override
+    public void calculationEndTime(Task task){
+        DateTimeComparator dateTimeComparator = new DateTimeComparator();
+        if(task instanceof Epic){
+            Epic epic = (Epic)task;
+            if (!epic.getSubtaskIds().isEmpty()) {
+                List<Subtask> sortSubtask = new ArrayList<>();
+                int maxDuration  = 0;
+               for(Long id :epic.getSubtaskIds()){
+                   Subtask subtask =subtasks.get(id);
+                   sortSubtask.add(subtask);
+                   if(subtask.getDuration()>maxDuration){
+                       maxDuration =subtask.getDuration();
+                   }
+
+               }
+                sortSubtask.sort(dateTimeComparator);
+                epic.setStartTime(sortSubtask.get(0).getStartTime());
+                epic.setEndTime(sortSubtask.get(sortSubtask.size()-1).getEndTime().plus(maxDuration,ChronoUnit.MINUTES));
+                epic.setDuration(maxDuration);
+
+            }
+            else {
+                epic.setEndTime(epic.getStartTime().plus(epic.getDuration(),ChronoUnit.MINUTES));
+
+            }
+
+        }
+        if (task != null) {
+            task.setEndTime(task.getStartTime().plus(task.getDuration(), ChronoUnit.MINUTES));
+        }
+
     }
     @Override
     public Long addSubtask(Subtask subtask){
@@ -67,14 +118,14 @@ public class InMemoryTaskManager implements TaskManager {
         subtasks.put(id,subtask);
         epic.addSubtaskId(subtask.getId());
         updateStatusEpic(subtask.getEpicId());
-
+        calculationEndTime(epic);
         return id;
     }
     @Override
     public Long addTask(Task task){
         long id = task.getId();
         tasks.put(id,task);
-
+        calculationEndTime(task);
         return id;
     }
 
@@ -94,6 +145,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
         subtasks.put(subtask.getId(),subtask);
         updateStatusEpic(subtask.getEpicId());
+        calculationEndTime(epics.get(subtask.getEpicId()));
     }
     @Override
     public void updateEpic(Epic epic){
@@ -115,7 +167,6 @@ public class InMemoryTaskManager implements TaskManager {
         for (long subtaskId: subtaskIds){
             Subtask subtask = subtasks.get(subtaskId);
 
-            //Первый проход
             if (status==null){
                 status = subtask.getStatus();
                 continue;
@@ -188,7 +239,9 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteByIndexSubtask(long id ){
         if(subtasks.get(id)!=null) {
+            Epic epic = epics.get(subtasks.get(id).getEpicId());
             subtasks.remove(id);
+            calculationEndTime(epic);
         }
         else{
             System.out.println("Такой задачи ,под таким номером не существует");
@@ -211,6 +264,25 @@ public class InMemoryTaskManager implements TaskManager {
         }
 
 
+    }
+    static class DateTimeComparator implements Comparator<Subtask> {
+
+        @Override
+        public int compare(Subtask task1, Subtask task2) {
+
+            // сравниваем товары — более дорогой должен быть дальше в списке
+            if (task1.getStartTime().isBefore(task2.getStartTime())) {
+                return 1;
+
+                // более дешёвый — ближе к началу списка
+            } else if (task1.getStartTime().isAfter(task2.getStartTime())) {
+                return -1;
+
+                // если стоимость равна, нужно вернуть 0
+            } else {
+                return 0;
+            }
+        }
     }
 
 }

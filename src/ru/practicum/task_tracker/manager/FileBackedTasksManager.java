@@ -18,7 +18,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     private void save(){
         try(FileWriter fileWriter = new FileWriter(file)){
-            fileWriter.write("id,type,name,status,description,epic\n");
+            fileWriter.write("id,type,name,status,description,time,duration,epic\n");
             for(Task task :getTasksVal()){
                 fileWriter.write(CSVFormatter.toString(task)+"\n");
 
@@ -44,7 +44,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             BufferedReader bufferedReader = new BufferedReader(fileReader);
             while (bufferedReader.ready()){
                 String line = bufferedReader.readLine();
-                if(!line.equals("id,type,name,status,description,epic")
+                if(!line.equals("id,type,name,status,description,time,duration,epic")
                         &&!line.isBlank()){
                       var lineConvert = CSVFormatter.fromString(line);
                       if(lineConvert.getType().equals(TaskType.TASK)){
@@ -60,8 +60,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 }
                  if(line.isBlank()){
                      List<Integer> idAr = CSVFormatter.historyFromString(bufferedReader.readLine());
-                     Collections.reverse(idAr);
                     if(idAr!=null) {
+                        Collections.reverse(idAr);
                          for (Integer id : idAr) {
                              taskManager.getTaskById(id);
                              taskManager.getEpicById(id);
@@ -134,24 +134,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return subtaskArrayList;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if(obj==null) {
-            return false;
-        }
-        FileBackedTasksManager o = (FileBackedTasksManager) obj;
-        boolean taskEquals = getTasks().equals(o.getTasks());
-        boolean epicEquals = getEpics().equals(o.getEpics());
-        boolean subEquals = getSubtasks().equals(o.getSubtasks());
 
-        if(taskEquals&&epicEquals&&subEquals) {
-            return true;
-        }
-        return false;
-    }
 
-    public File getFile() {
-        return file;
-    }
+
+
 
 }

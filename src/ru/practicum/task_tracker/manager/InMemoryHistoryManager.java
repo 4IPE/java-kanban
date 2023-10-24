@@ -4,15 +4,19 @@ import ru.practicum.task_tracker.CustomLinkedList;
 import ru.practicum.task_tracker.CustomLinkedList.Node;
 import ru.practicum.task_tracker.tasks.Task;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.Comparator;
+
+import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager{
    private final CustomLinkedList customLinkedList = new CustomLinkedList();
     private final Map<Long, Node> nodeMap = customLinkedList.getNodeMap();
     private static final int LIMIT = 10;
+
+    public Map<Long, Node> getNodeMap() {
+        return nodeMap;
+    }
+
     @Override
     public void addTask(Task task) {
         if(task==null){
@@ -52,6 +56,33 @@ public class InMemoryHistoryManager implements HistoryManager{
         Collections.reverse(tasks);
         return tasks;
     }
+    @Override
+    public Set<Task> getPrioritizedTasks(){
+        Set<Task> taskTreeSet = new TreeSet<>(new DateTimeComparator());
+        ArrayList<Task> historyArr = (ArrayList<Task>) getHistory();
+        taskTreeSet.addAll(historyArr);
+        return taskTreeSet;
+    }
+    static class DateTimeComparator implements Comparator<Task> { // на месте T - класс Item
+
+        @Override
+        public int compare(Task task1, Task task2) {
+
+            // сравниваем товары — более дорогой должен быть дальше в списке
+            if (task1.getStartTime().isBefore(task2.getStartTime())) {
+                return 1;
+
+                // более дешёвый — ближе к началу списка
+            } else if (task1.getStartTime().isAfter(task2.getStartTime())) {
+                return -1;
+
+                // если стоимость равна, нужно вернуть 0
+            } else {
+                return 0;
+            }
+        }
+    }
+
 
 
 }
