@@ -1,7 +1,7 @@
 package ru.practicum.task_tracker.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
-import org.junit.jupiter.api.BeforeAll;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.practicum.task_tracker.enumereits.TaskStatus;

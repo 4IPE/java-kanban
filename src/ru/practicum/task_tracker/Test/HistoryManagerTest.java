@@ -1,16 +1,14 @@
 package ru.practicum.task_tracker.Test;
 
-import org.junit.jupiter.api.BeforeAll;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.practicum.task_tracker.manager.HistoryManager;
-import ru.practicum.task_tracker.manager.InMemoryHistoryManager;
 import ru.practicum.task_tracker.manager.Manager;
 import ru.practicum.task_tracker.tasks.Epic;
 import ru.practicum.task_tracker.tasks.Subtask;
 import ru.practicum.task_tracker.tasks.Task;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
