@@ -27,7 +27,6 @@ class EpicTest {
         Subtask subtask2 = new Subtask("Test","Test",epic.getId(),"22.02.2022 22:22",0);
         epic.addSubtaskId(subtask1.getId());
         epic.addSubtaskId(subtask2.getId());
-        int sz = epic.getSubtaskIds().size();
 
         assertTrue(subtask1.getStatus().equals(TaskStatus.NEW)&&subtask2.getStatus().equals(TaskStatus.NEW)&&epic.getSubtaskIds().size()!=0);
 

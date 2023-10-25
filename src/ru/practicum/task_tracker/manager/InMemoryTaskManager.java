@@ -5,9 +5,9 @@ import ru.practicum.task_tracker.tasks.Epic;
 import ru.practicum.task_tracker.tasks.Subtask;
 import ru.practicum.task_tracker.tasks.Task;
 
-import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.Comparator;
 
 
 public class InMemoryTaskManager implements TaskManager {
@@ -15,6 +15,7 @@ public class InMemoryTaskManager implements TaskManager {
     private final HashMap<Long,Subtask> subtasks = new HashMap<>();
     private final HashMap<Long,Task> tasks = new HashMap<>();
     private final HistoryManager historyManager = Manager.getDefaultHistoryManager();
+    private Set<Task> prioritizedHistory = new TreeSet<>(new DateTimeComparatorTask());
 
 
     public List<Epic> getEpicsVal() {
@@ -55,8 +56,11 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Set<Task> getPrioritizedTasks(){
-        return historyManager.getPrioritizedTasks();
+        ArrayList<Task> historyArr = (ArrayList<Task>) getHistory();
+        this.prioritizedHistory.addAll(historyArr);
+        return this.prioritizedHistory;
     }
+
 
     public HistoryManager getHistoryManager() {
         return historyManager;
@@ -71,12 +75,12 @@ public class InMemoryTaskManager implements TaskManager {
     public Long addNewEpic(Epic epic){
         long id = epic.getId();
         epics.put(id,epic);
+        calculationEndTime(epic);
         return id;
     }
 
-    @Override
-    public void calculationEndTime(Task task){
-        DateTimeComparator dateTimeComparator = new DateTimeComparator();
+    private void calculationEndTime(Task task){
+        DateTimeSubtaskComparator dateTimeComparator = new DateTimeSubtaskComparator();
         if(task instanceof Epic){
             Epic epic = (Epic)task;
             if (!epic.getSubtaskIds().isEmpty()) {
@@ -92,12 +96,14 @@ public class InMemoryTaskManager implements TaskManager {
                }
                 sortSubtask.sort(dateTimeComparator);
                 epic.setStartTime(sortSubtask.get(0).getStartTime());
-                epic.setEndTime(sortSubtask.get(sortSubtask.size()-1).getEndTime().plus(maxDuration,ChronoUnit.MINUTES));
+                epic.setEndTime(sortSubtask.get(0).getEndTime().plus(maxDuration,ChronoUnit.MINUTES));
                 epic.setDuration(maxDuration);
+                return;
 
             }
             else {
                 epic.setEndTime(epic.getStartTime().plus(epic.getDuration(),ChronoUnit.MINUTES));
+                return;
 
             }
 
@@ -118,6 +124,7 @@ public class InMemoryTaskManager implements TaskManager {
         subtasks.put(id,subtask);
         epic.addSubtaskId(subtask.getId());
         updateStatusEpic(subtask.getEpicId());
+        calculationEndTime(subtask);
         calculationEndTime(epic);
         return id;
     }
@@ -265,7 +272,9 @@ public class InMemoryTaskManager implements TaskManager {
 
 
     }
-    static class DateTimeComparator implements Comparator<Subtask> {
+
+    //COMPARATORS
+    static class DateTimeSubtaskComparator implements Comparator<Subtask> {
 
         @Override
         public int compare(Subtask task1, Subtask task2) {
@@ -279,6 +288,25 @@ public class InMemoryTaskManager implements TaskManager {
                 return -1;
 
                 // если стоимость равна, нужно вернуть 0
+            } else {
+                return 0;
+            }
+        }
+    }
+    static class DateTimeComparatorTask implements Comparator<Task> {
+
+        @Override
+        public int compare(Task task1, Task task2) {
+
+
+            if (task1.getStartTime().isBefore(task2.getStartTime())) {
+                return 1;
+
+
+            } else if (task1.getStartTime().isAfter(task2.getStartTime())) {
+                return -1;
+
+
             } else {
                 return 0;
             }

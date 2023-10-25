@@ -2,13 +2,11 @@ package ru.practicum.task_tracker.tasks;
 
 import ru.practicum.task_tracker.enumereits.TaskStatus;
 import ru.practicum.task_tracker.enumereits.TaskType;
-import ru.practicum.task_tracker.manager.InMemoryTaskManager;
-import ru.practicum.task_tracker.manager.Manager;
+
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
-import java.util.Objects;
+
 
 
 public class Task {
@@ -19,7 +17,7 @@ public class Task {
     protected TaskType type;
     protected int duration ;
     protected LocalDateTime startTime;
-    private LocalDateTime endTime = LocalDateTime.now() ;
+    private LocalDateTime endTime  ;
     private static long countId=0;
 
     private final static DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");

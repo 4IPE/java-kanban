@@ -3,8 +3,6 @@ package ru.practicum.task_tracker.manager;
 import ru.practicum.task_tracker.tasks.Epic;
 import ru.practicum.task_tracker.tasks.Subtask;
 import ru.practicum.task_tracker.tasks.Task;
-
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +21,7 @@ public interface TaskManager {
      HashMap<Long, Subtask> getSubtasks();
 
    HashMap<Long, Task> getTasks();
-    void calculationEndTime(Task task);
+
 
     Long addSubtask(Subtask subtask);
     Long addTask(Task task);

@@ -32,5 +32,8 @@ class FileBackedTasksManagerUnitTest extends TaskManagerTest {
         boolean taskMap = fileBackedTasksManager1.getTasks().equals(fileBackedTasksManager.getTasks());
         assertTrue(epicMap&&subMap&&taskMap,"Ошибка в чтении файла ");
 
+        Throwable except = assertThrows(NullPointerException.class,()->FileBackedTasksManager.loadFromFile(null));
+        assertEquals(NullPointerException.class,except.getClass(),"Происходит загрузка пустого файла");
+
     }
 }

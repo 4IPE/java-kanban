@@ -12,55 +12,73 @@ import ru.practicum.task_tracker.tasks.Subtask;
 import ru.practicum.task_tracker.tasks.Task;
 
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class  TaskManagerTest {
 
-    protected static Epic epic;
-    protected static Subtask subtask;
-    protected static Task task;
+    protected  Epic epic;
+    protected  Epic epic1;
+    protected  Subtask subtask;
+    protected  Task task;
     protected TaskManager taskManager;
 
     @BeforeEach
     public void beforeEach(){
         taskManager = Manager.getDefault();
-    }
-
-
-    @BeforeAll
-    public static void beforeAll(){
         epic =  new Epic("Test","TEst","22.01.2022 22:22",0);
         task = new Task("Test","TEst",  "22.02.2022 22:22",0);
         subtask = new Subtask("Test","TEst",  epic.getId(),"22.03.2022 22:22",0);
+        epic1 = new Epic("Test","TEst","22.04.2022 22:22",0);
     }
+
+
+
+    //Работает
     @Test
     public void addTest(){
+        Throwable exceptionTask = assertThrows(NullPointerException.class,()->taskManager.addTask(null));
+        assertEquals(NullPointerException.class,exceptionTask.getClass(),"Ошибка не возникает в task");
+        Throwable exceptionEpic = assertThrows(NullPointerException.class,()->taskManager.addNewEpic(null));
+        assertEquals(NullPointerException.class,exceptionEpic.getClass(),"Ошибка не возникает в epic");
+        Throwable exceptionSubtask = assertThrows(NullPointerException.class,()->taskManager.addSubtask(null));
+        assertEquals(NullPointerException.class,exceptionSubtask.getClass(),"Ошибка не возникает в сабтаске");
+
         assertEquals(0,taskManager.getEpics().size(),"Список эпиков не пустой ");
         assertEquals(0,taskManager.getTasks().size(),"Список тасков не пустой ");
         assertEquals(0,taskManager.getSubtasks().size(),"Список cабтасков не пустой ");
+
         taskManager.addTask(task);
         taskManager.addNewEpic(epic);
         taskManager.addSubtask(subtask);
+
         assertEquals(1,taskManager.getEpics().size(),"Список эпиков  пустой ");
         assertEquals(1,taskManager.getTasks().size(),"Список тасков  пустой ");
         assertEquals(1,taskManager.getSubtasks().size(),"Список cабтасков  пустой ");
     }
-
+    //Работает
     @Test
     public void calculationEndTime(){
-        epic.addSubtaskId(subtask.getId());
         taskManager.addNewEpic(epic);
         taskManager.addSubtask(subtask);
-        taskManager.calculationEndTime(task);
-        taskManager.calculationEndTime(subtask);
-        taskManager.calculationEndTime(epic);
-        assertEquals(subtask.getEndTime().plus(subtask.getDuration(), ChronoUnit.MINUTES),epic.getEndTime(),"Ошибка с эпиком");
-        assertEquals(subtask.getStartTime(),epic.getStartTime());
+        taskManager.addTask(task);
+        assertEquals(subtask.getEndTime().plus(subtask.getDuration(), ChronoUnit.MINUTES),epic.getEndTime(),"Ошибка с эпиком в конечном времени");
+        assertEquals(subtask.getStartTime(),epic.getStartTime(),"Ошибка с эпиком в стартовом времени");
         assertEquals(task.getStartTime().plus(task.getDuration(),ChronoUnit.MINUTES),task.getEndTime(),"Ошибка с таском");
     }
 
+    // Работает
     @Test
     public void updateTest(){
-        Epic epic1 = new Epic("Test","TEst",  "22.02.2022 22:22",0);
+        Throwable exceptionTask = assertThrows(NullPointerException.class,()->taskManager.updateTask(null));
+        assertEquals(NullPointerException.class,exceptionTask.getClass(),"Ошибка не возникает в task");
+        Throwable exceptionEpic = assertThrows(NullPointerException.class,()->taskManager.updateEpic(null));
+        assertEquals(NullPointerException.class,exceptionEpic.getClass(),"Ошибка не возникает в epic");
+        Throwable exceptionSubtask = assertThrows(NullPointerException.class,()->taskManager.updateSubtask(null));
+        assertEquals(NullPointerException.class,exceptionSubtask.getClass(),"Ошибка не возникает в сабтаске");
+
+
+        Epic epic1 = new Epic("Test","TEst",  "22.01.2022 22:22",0);
         Subtask subtask1 = new Subtask("Test","TEst",  epic1.getId(),"22.02.2022 22:22",0);
         Task task1 = new Task("Test","TEst", "22.03.2022 22:22",0);
         taskManager.updateTask(task1);
@@ -71,7 +89,7 @@ public abstract class  TaskManagerTest {
         assertNotEquals(epic,taskManager.getEpics().get(epic1.getId()));
 
     }
-
+    //Работает
     @Test
     public void updateStatusEpic(){
         assertEquals(epic.getStatus(), TaskStatus.NEW);
@@ -80,19 +98,29 @@ public abstract class  TaskManagerTest {
         taskManager.addSubtask(subtask);
         assertEquals(TaskStatus.IN_PROGRESS,epic.getStatus());
     }
-
+//Работает
     @Test
     public void deleteByIndexTest(){
         taskManager.addTask(task);
         taskManager.addNewEpic(epic);
         taskManager.addSubtask(subtask);
+
+        taskManager.deleteByIndexTask(-1);
+        taskManager.deleteByIndexEpic(-1);
+        taskManager.deleteByIndexSubtask(-1);
+        assertEquals(1,taskManager.getTasks().size(),"Ошибка удаления тасков");
+        assertEquals(1,taskManager.getEpics().size(),"Ошибка удаления эпиков");
+        assertEquals(1,taskManager.getSubtasks().size(),"Ошибка удаления сабтасков");
+
         taskManager.deleteByIndexTask(task.getId());
         taskManager.deleteByIndexEpic(epic.getId());
         taskManager.deleteByIndexSubtask(subtask.getId());
+
         assertEquals(0,taskManager.getTasks().size(),"Ошибка удаления тасков");
         assertEquals(0,taskManager.getEpics().size(),"Ошибка удаления эпиков");
         assertEquals(0,taskManager.getSubtasks().size(),"Ошибка удаления сабтасков");
     }
+    //работает
     @Test
     public void deleteAllTest(){
         taskManager.addTask(task);
@@ -102,6 +130,40 @@ public abstract class  TaskManagerTest {
         assertEquals(0,taskManager.getTasks().size(),"Ошибка удаления ");
         assertEquals(0,taskManager.getEpics().size(),"Ошибка удаления ");
         assertEquals(0,taskManager.getSubtasks().size(),"Ошибка удаления ");
+    }
+    //Работает
+    @Test
+    public void getPrioritizedTasksTest(){
+        assertEquals(0,taskManager.getPrioritizedTasks().size());
+        taskManager.addTask(task);
+        taskManager.addNewEpic(epic);
+        taskManager.addNewEpic(epic1);
+        taskManager.addSubtask(subtask);
+        taskManager.getTaskById(task.getId());
+        taskManager.getEpicById(epic.getId());
+        taskManager.getEpicById(epic1.getId());
+        List<Task> sort1  = new ArrayList<>(taskManager.getPrioritizedTasks());
+        assertTrue(sort1.get(2).equals(task) && sort1.get(0).equals(epic1) && sort1.get(1).equals(epic));
+
+    }
+
+    //Работает
+    @Test
+    public void getByIDTest(){
+        assertNull(taskManager.getTaskById(-1),"Получает несуществующий task");
+        assertNull(taskManager.getEpicById(-1),"Получает несуществующий epic");
+        assertNull(taskManager.getSubtaskById(-1),"Получает несуществующий subtask");
+
+        taskManager.addTask(task);
+        taskManager.addNewEpic(epic);
+        taskManager.addSubtask(subtask);
+
+        assertEquals(task,taskManager.getTaskById(task.getId()),"Не получает существующий task");
+        assertEquals(subtask,taskManager.getSubtaskById(subtask.getId()),"Не получает существующий subtask");
+        assertEquals(epic,taskManager.getEpicById(epic.getId()),"Не получает существующий epic");
+        assertEquals(subtask,taskManager.gettingSubtaskFromEpic(epic.getId()).get(0) , "Не получает существующий subtask по id epic ");
+        assertNull(taskManager.gettingSubtaskFromEpic(-1),"Получает по subtask по несуществующему id ");
+
     }
 
 
