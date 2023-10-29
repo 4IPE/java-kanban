@@ -27,8 +27,18 @@ public class Task {
         this.status = TaskStatus.NEW;
         this.type = TaskType.TASK;
         this.id=generateId();
-        this.startTime = LocalDateTime.parse(startTime,FORMATTER);
-        this.duration = duration;
+        if(startTime!=null){
+            this.startTime = LocalDateTime.parse(startTime, FORMATTER);
+        }
+        else {
+            this.startTime = null;
+        }
+        if(duration<=0){
+            throw new IllegalArgumentException("Duration не может равнятся: " + duration);
+        }
+        else {
+            this.duration = duration;
+        }
 
     }
 

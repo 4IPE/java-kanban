@@ -14,7 +14,7 @@ class EpicTest {
     @BeforeEach
     public  void beforeEach(){
 
-        epic = new Epic("Test","Test","22.02.2022 22:22",0);
+        epic = new Epic("Test","Test","22.02.2022 22:22",10);
     }
 
     @Test
@@ -23,8 +23,8 @@ class EpicTest {
     }
     @Test
     public void onlyNewStatusSubtask(){
-        Subtask subtask1 = new Subtask("Test","Test",epic.getId(),"22.02.2022 22:22",0);
-        Subtask subtask2 = new Subtask("Test","Test",epic.getId(),"22.02.2022 22:22",0);
+        Subtask subtask1 = new Subtask("Test","Test",epic.getId(),"22.02.2022 22:22",10);
+        Subtask subtask2 = new Subtask("Test","Test",epic.getId(),"22.02.2022 22:22",1);
         epic.addSubtaskId(subtask1.getId());
         epic.addSubtaskId(subtask2.getId());
 
@@ -33,8 +33,8 @@ class EpicTest {
     }
     @Test
     public void onlyDoneStatusSubtask(){
-        Subtask subtask1 = new Subtask("Test","Test",epic.getId(),"22.02.2022 22:22",0);
-        Subtask subtask2 = new Subtask("Test","Test",epic.getId(),"22.02.2022 22:22",0);
+        Subtask subtask1 = new Subtask("Test","Test",epic.getId(),"22.02.2022 22:22",10);
+        Subtask subtask2 = new Subtask("Test","Test",epic.getId(),"22.02.2022 22:22",10);
         subtask1.setStatus(TaskStatus.DONE);
         subtask2.setStatus(TaskStatus.DONE);
         epic.addSubtaskId(subtask1.getId());
@@ -45,8 +45,8 @@ class EpicTest {
 
     @Test
     public void haveDoneAndNewStatusSubtask(){
-        Subtask subtask1 = new Subtask("Test","Test",epic.getId(),"22.02.2022 22:22",0);
-        Subtask subtask2 = new Subtask("Test","Test",epic.getId(),"22.02.2022 22:22",0);
+        Subtask subtask1 = new Subtask("Test","Test",epic.getId(),"22.02.2022 22:22",10);
+        Subtask subtask2 = new Subtask("Test","Test",epic.getId(),"22.02.2022 22:22",10);
         epic.addSubtaskId(subtask1.getId());
         epic.addSubtaskId(subtask2.getId());
         subtask2.setStatus(TaskStatus.DONE);
@@ -55,12 +55,19 @@ class EpicTest {
 
     @Test
     public void haveInProgressStatusSubtask(){
-        Subtask subtask1 = new Subtask("Test","Test",epic.getId(),"22.02.2022 22:22",0);
-        Subtask subtask2 = new Subtask("Test","Test",epic.getId(),"22.02.2022 22:22",0);
+        Subtask subtask1 = new Subtask("Test","Test",epic.getId(),"22.02.2022 22:22",10);
+        Subtask subtask2 = new Subtask("Test","Test",epic.getId(),"22.02.2022 22:22",10);
         epic.addSubtaskId(subtask1.getId());
         epic.addSubtaskId(subtask2.getId());
         subtask2.setStatus(TaskStatus.DONE);
         assertTrue(subtask1.getStatus().equals(TaskStatus.NEW)&&subtask2.getStatus().equals(TaskStatus.DONE)&&epic.getSubtaskIds().size()!=0);
+    }
+
+    @Test
+    public void haveDurathionZero(){
+        Throwable exception = assertThrows(IllegalArgumentException.class,()->new Epic("Test","Test","22.02.2022 22:22",0));
+        assertEquals(IllegalArgumentException.class,exception.getClass());
+
     }
 
 }

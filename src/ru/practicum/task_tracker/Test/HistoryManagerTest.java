@@ -25,9 +25,9 @@ class HistoryManagerTest {
     @BeforeEach
     public void beforeEach(){
         historyManager = Manager.getDefaultHistoryManager();
-        epic =  new Epic("Test","TEst","22.01.2023 22:22",0);
-        subtask =  new Subtask("Test","TEst", epic.getId(), "22.02.2023 22:22",0);
-        task = new Task("Test","TEst",  "22.03.2023 22:22",0);
+        epic =  new Epic("Test","TEst","22.01.2023 22:22",10);
+        subtask =  new Subtask("Test","TEst", epic.getId(), "22.02.2023 22:22",10);
+        task = new Task("Test","TEst",  "22.03.2023 22:22",10);
 
     }
     @Test
@@ -60,26 +60,20 @@ class HistoryManagerTest {
         historyManager.addTask(task);
         historyManager.addTask(subtask);
         historyManager.addTask(epic);
-        historyManager.remove(-1);
-        System.out.println(historyManager.getHistory());
         assertEquals(3,historyManager.getHistory().size());
-        System.out.println(historyManager.getHistory());
-        historyManager.remove(4);
+        historyManager.remove(task.getId());
         assertEquals(2,historyManager.getHistory().size());
-        System.out.println(historyManager.getHistory());
-        historyManager.remove(5);
+        historyManager.remove(subtask.getId());
         assertEquals(1,historyManager.getHistory().size());
-        System.out.println(historyManager.getHistory());
-        historyManager.remove(6);
-        System.out.println(historyManager.getHistory());
+        historyManager.remove(epic.getId());
         assertTrue(historyManager.getHistory().isEmpty());
 
-        //Дублирование
-        historyManager.remove(1);
+
+        historyManager.remove(task.getId());
         assertTrue(historyManager.getHistory().isEmpty());
-        historyManager.remove(2);
+        historyManager.remove(subtask.getId());
         assertTrue(historyManager.getHistory().isEmpty());
-        historyManager.remove(3);
+        historyManager.remove(epic.getId());
         assertTrue(historyManager.getHistory().isEmpty());
     }
 

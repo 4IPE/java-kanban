@@ -35,5 +35,12 @@ public class Epic extends Task {
         subtaskIds.add(id);
     }
 
+    public void removeSubtaskId(long id){
+        subtaskIds.remove(id);
+        if(subtaskIds.isEmpty()){
+            this.startTime = null;
+        }
+    }
+
 
 }

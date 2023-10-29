@@ -12,8 +12,7 @@ import ru.practicum.task_tracker.tasks.Subtask;
 import ru.practicum.task_tracker.tasks.Task;
 
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
+
 
 public abstract class  TaskManagerTest {
 
@@ -26,10 +25,10 @@ public abstract class  TaskManagerTest {
     @BeforeEach
     public void beforeEach(){
         taskManager = Manager.getDefault();
-        epic =  new Epic("Test","TEst","22.01.2022 22:22",0);
-        task = new Task("Test","TEst",  "22.02.2022 22:22",0);
-        subtask = new Subtask("Test","TEst",  epic.getId(),"22.03.2022 22:22",0);
-        epic1 = new Epic("Test","TEst","22.04.2022 22:22",0);
+        epic =  new Epic("Test","TEst","22.01.2022 22:22",10);
+        task = new Task("Test","TEst",  "22.02.2022 22:22",1);
+        subtask = new Subtask("Test","TEst",  epic.getId(),"22.03.2022 22:22",10);
+        epic1 = new Epic("Test","TEst","22.04.2022 22:22",10);
     }
 
 
@@ -78,9 +77,9 @@ public abstract class  TaskManagerTest {
         assertEquals(NullPointerException.class,exceptionSubtask.getClass(),"Ошибка не возникает в сабтаске");
 
 
-        Epic epic1 = new Epic("Test","TEst",  "22.01.2022 22:22",0);
-        Subtask subtask1 = new Subtask("Test","TEst",  epic1.getId(),"22.02.2022 22:22",0);
-        Task task1 = new Task("Test","TEst", "22.03.2022 22:22",0);
+        Epic epic1 = new Epic("Epic1","TEst",  "22.01.2022 22:22",10);
+        Subtask subtask1 = new Subtask("Test","TEst",  epic1.getId(),"22.02.2022 22:22",10);
+        Task task1 = new Task("Task1","TEst", "22.03.2022 22:22",10);
         taskManager.updateTask(task1);
         taskManager.updateEpic(epic1);
         taskManager.updateSubtask(subtask1);
@@ -113,8 +112,8 @@ public abstract class  TaskManagerTest {
         assertEquals(1,taskManager.getSubtasks().size(),"Ошибка удаления сабтасков");
 
         taskManager.deleteByIndexTask(task.getId());
-        taskManager.deleteByIndexEpic(epic.getId());
         taskManager.deleteByIndexSubtask(subtask.getId());
+        taskManager.deleteByIndexEpic(epic.getId());
 
         assertEquals(0,taskManager.getTasks().size(),"Ошибка удаления тасков");
         assertEquals(0,taskManager.getEpics().size(),"Ошибка удаления эпиков");
@@ -134,16 +133,20 @@ public abstract class  TaskManagerTest {
     //Работает
     @Test
     public void getPrioritizedTasksTest(){
-        assertEquals(0,taskManager.getPrioritizedTasks().size());
+        assertNull(taskManager.getPrioritizedTasks(),"список не пуст");
+
         taskManager.addTask(task);
         taskManager.addNewEpic(epic);
-        taskManager.addNewEpic(epic1);
         taskManager.addSubtask(subtask);
-        taskManager.getTaskById(task.getId());
-        taskManager.getEpicById(epic.getId());
-        taskManager.getEpicById(epic1.getId());
-        List<Task> sort1  = new ArrayList<>(taskManager.getPrioritizedTasks());
-        assertTrue(sort1.get(2).equals(task) && sort1.get(0).equals(epic1) && sort1.get(1).equals(epic));
+
+        assertEquals(2,taskManager.getPrioritizedTasks().size(),"Выводится лишний элемент  ");
+
+        Throwable exceptionTask = assertThrows(IllegalArgumentException.class,()->taskManager.addTask(task),"Нет ошибки есть пересечение");
+        assertEquals(IllegalArgumentException.class,exceptionTask.getClass(),"Другая ошибка"+exceptionTask.getClass());
+        Throwable exceptionEpic = assertThrows(IllegalArgumentException.class,()->taskManager.addTask(epic),"Нет ошибки есть пересечение");
+        assertEquals(IllegalArgumentException.class,exceptionEpic.getClass(),"Другая ошибка"+exceptionEpic.getClass());
+        Throwable exceptionSubtask = assertThrows(IllegalArgumentException.class,()->taskManager.addTask(subtask),"Нет ошибки есть пересечение");
+        assertEquals(IllegalArgumentException.class,exceptionSubtask.getClass(),"Другая ошибка"+exceptionSubtask.getClass());
 
     }
 
