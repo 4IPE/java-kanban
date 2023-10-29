@@ -80,6 +80,10 @@ public abstract class  TaskManagerTest {
         Epic epic1 = new Epic("Epic1","TEst",  "22.01.2022 22:22",10);
         Subtask subtask1 = new Subtask("Test","TEst",  epic1.getId(),"22.02.2022 22:22",10);
         Task task1 = new Task("Task1","TEst", "22.03.2022 22:22",10);
+        taskManager.addTask(task);
+        taskManager.addNewEpic(epic);
+        taskManager.addSubtask(subtask);
+
         taskManager.updateTask(task1);
         taskManager.updateEpic(epic1);
         taskManager.updateSubtask(subtask1);

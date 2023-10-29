@@ -195,7 +195,20 @@ public class InMemoryTaskManager implements TaskManager {
         if(savedTask==null){
             return;
         }
-        tasks.put(task.getId(),task);
+        dateTimesTasks.remove(savedTask.getStartTime());
+        if(!dateTimesTasks.contains(task.getStartTime())) {
+            tasks.put(task.getId(),task);
+            calculationEndTime(task);
+
+            if(task.getStartTime()!=null) {
+                dateTimesTasks.add(task.getStartTime());
+            }
+            addAllTaskInPrioritizedArr();
+        }
+        else {
+            throw  new IllegalArgumentException("Нельзя добавлять задачи с одним стартовым временем");
+        }
+
 
     }
     @Override
@@ -204,9 +217,20 @@ public class InMemoryTaskManager implements TaskManager {
         if(savedSubtask==null){
             return;
         }
-        subtasks.put(subtask.getId(),subtask);
-        updateStatusEpic(subtask.getEpicId());
-        calculationEndTime(epics.get(subtask.getEpicId()));
+        dateTimesTasks.remove(savedSubtask.getStartTime());
+        if(!dateTimesTasks.contains(subtask.getStartTime())) {
+            subtasks.put(subtask.getId(),subtask);
+            updateStatusEpic(subtask.getEpicId());
+            calculationEndTime(epics.get(subtask.getEpicId()));
+
+            if(subtask.getStartTime()!=null && epics.get(subtask.getEpicId())!=null) {
+                dateTimesTasks.add(subtask.getStartTime());
+            }
+            addAllTaskInPrioritizedArr();
+        }
+        else {
+            throw  new IllegalArgumentException("Нельзя добавлять задачи с одним стартовым временем");
+        }
 
     }
     @Override
@@ -215,8 +239,19 @@ public class InMemoryTaskManager implements TaskManager {
         if(savedEpic==null){
             return;
         }
-        epics.put(epic.getId(),epic);
-        calculationEndTime(epic);
+
+        dateTimesTasks.remove(savedEpic.getStartTime());
+        if(!dateTimesTasks.contains(epic.getStartTime())) {
+            epics.put(epic.getId(),epic);
+            calculationEndTime(epic);
+            if(epic.getStartTime()!=null) {
+                dateTimesTasks.add(epic.getStartTime());
+            }
+            addAllTaskInPrioritizedArr();
+        }
+        else {
+            throw  new IllegalArgumentException("Нельзя добавлять задачи с одним стартовым временем");
+        }
 
     }
     private void updateStatusEpic(long epicId){
@@ -281,10 +316,13 @@ public class InMemoryTaskManager implements TaskManager {
         tasks.clear();
         epics.clear();
         subtasks.clear();
+        dateTimesTasks.clear();
+        prioritized.clear();
     }
     @Override
     public void deleteByIndexTask(long id ){
         if(tasks.get(id)!=null) {
+            dateTimesTasks.remove(tasks.get(id).getStartTime());
             tasks.remove(id);
         }
         else{
@@ -294,6 +332,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteByIndexEpic(long id ){
         if(epics.get(id)!=null) {
+            dateTimesTasks.remove(epics.get(id).getStartTime());
             epics.remove(id);
         }
         else{
@@ -304,6 +343,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void deleteByIndexSubtask(long id ){
         if(subtasks.get(id)!=null) {
             Epic epic = epics.get(subtasks.get(id).getEpicId());
+            dateTimesTasks.remove(subtasks.get(id).getStartTime());
             subtasks.remove(id);
             epic.removeSubtaskId(id);
             calculationEndTime(epic);
