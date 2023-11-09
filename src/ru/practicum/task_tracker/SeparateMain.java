@@ -3,7 +3,6 @@ package ru.practicum.task_tracker;
 import ru.practicum.task_tracker.manager.Manager;
 import ru.practicum.task_tracker.manager.TaskManager;
 import ru.practicum.task_tracker.server.KVServer;
-
 import ru.practicum.task_tracker.tasks.Epic;
 import ru.practicum.task_tracker.tasks.Subtask;
 import ru.practicum.task_tracker.tasks.Task;
@@ -11,7 +10,7 @@ import ru.practicum.task_tracker.tasks.Task;
 import java.io.IOException;
 
 
-public class Main {
+public class SeparateMain {
 
     public static void main(String[] args) throws IOException {
        KVServer kvServer = new KVServer();
@@ -48,6 +47,9 @@ public class Main {
         Subtask subtask7 = new Subtask("Subtask6 создания ","Написать  ",epic4Id,null,40);
         Long subtaskId7 = taskManager.addSubtask(subtask7);
 
+
+
+     //Вот тут возникают ошибки во всех get
         Epic epic = taskManager.getEpicById(epic1Id);
         System.out.println(epic);
         System.out.println(taskManager.gettingSubtaskFromEpic(epic2Id));

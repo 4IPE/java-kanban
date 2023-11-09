@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import ru.practicum.task_tracker.manager.FileBackedTasksManager;
 
 
-import java.io.File;
+
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -15,7 +15,7 @@ class FileBackedTasksManagerUnitTest extends TaskManagerTest {
 
 
     @Test
-    public void testLoadFromFile() throws Exception {
+    public void testLoadFromFile() {
         assertTrue(fileBackedTasksManager.getEpics().isEmpty(),"Список не пустой ,внутри что то есть ");
         assertTrue(fileBackedTasksManager.getTasks().isEmpty(),"Список не пустой ,внутри что то есть ");
         assertTrue(fileBackedTasksManager.getSubtasks().isEmpty(),"Список не пустой ,внутри что то есть ");

@@ -1,16 +1,11 @@
 package ru.practicum.task_tracker.server;
 
-import com.sun.net.httpserver.HttpExchange;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
-import java.net.URISyntaxException;
+
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 
 public class KVTaskClient {
 
@@ -38,6 +33,7 @@ public class KVTaskClient {
         HttpClient client = HttpClient.newHttpClient();
         HttpResponse.BodyHandler<String> handler =HttpResponse.BodyHandlers.ofString();
         HttpResponse<String> response = client.send(request,handler) ;
+        System.out.println(response.body());
     }
 
     public String load(String key) throws Exception{

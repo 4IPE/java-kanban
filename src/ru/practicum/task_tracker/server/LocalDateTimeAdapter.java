@@ -26,6 +26,7 @@ class LocalDateTimeAdapter extends TypeAdapter<LocalDateTime> {
         if(jsonReader.nextString().equals("null")){
             return null;
         }
+
         return LocalDateTime.parse(jsonReader.nextString(), FORMATTER);
     }
 }
