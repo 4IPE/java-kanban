@@ -1,12 +1,17 @@
 package ru.practicum.task_tracker.manager;
 
+import ru.practicum.task_tracker.server.HttpTaskManager;
+
+import java.io.File;
+
 public class Manager {
 
     public static TaskManager getDefault(){
-        return new InMemoryTaskManager();
+        return new HttpTaskManager("http://localhost:8080");
     }
 
     public static HistoryManager getDefaultHistoryManager(){
         return new InMemoryHistoryManager();
     }
+
 }

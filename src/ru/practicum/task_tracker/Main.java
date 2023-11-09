@@ -2,20 +2,26 @@ package ru.practicum.task_tracker;
 
 import ru.practicum.task_tracker.manager.Manager;
 import ru.practicum.task_tracker.manager.TaskManager;
+import ru.practicum.task_tracker.server.KVServer;
+import ru.practicum.task_tracker.server.ServerManager;
 import ru.practicum.task_tracker.tasks.Epic;
 import ru.practicum.task_tracker.tasks.Subtask;
 import ru.practicum.task_tracker.tasks.Task;
 
+import java.io.IOException;
+import java.util.List;
 
 
 public class Main {
 
-    public static void main(String[] args){
+    public static void main(String[] args) throws IOException {
+       KVServer kvServer = new KVServer();
+       kvServer.start();
         TaskManager taskManager = Manager.getDefault();
-        Task task1  = new Task("Таск 1","Ну какой то таск ","12.03.2022 22:22",20);
-        taskManager.addTask(task1);
+        Task task1  = new Task("Таск 1","Ну какой то таск ","12.03.2022 22:23",20);
+       Long taskId1 = taskManager.addTask(task1);
         Task task2  = new Task("Таск 1","Ну какой то таск ",null,20);
-        taskManager.addTask(task2);
+        Long taskId2 = taskManager.addTask(task2);
 
 
         Epic epic1 =  new Epic("Эпик 1","Нужно сделать","13.01.2023 22:22",10);
@@ -43,7 +49,12 @@ public class Main {
         Subtask subtask7 = new Subtask("Subtask6 создания ","Написать  ",epic4Id,null,40);
         Long subtaskId7 = taskManager.addSubtask(subtask7);
 
-
+        Epic epic = taskManager.getEpicById(epic1Id);
+        System.out.println(epic);
+        System.out.println(taskManager.gettingSubtaskFromEpic(epic2Id));
+        System.out.println(taskManager.getSubtaskById(subtaskId1));
+        System.out.println(taskManager.getTaskById(taskId1));
+        System.out.println(taskManager.getTaskById(taskId2));
 
 
     }

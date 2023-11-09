@@ -14,7 +14,15 @@ import java.util.List;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
 
-   private final File file;
+   protected final String fileName;
+   private static File file ;
+
+
+
+    public FileBackedTasksManager(String fileName){
+        this.fileName = fileName;
+        this.file = new File(fileName);
+    }
 
     private void save(){
         try(FileWriter fileWriter = new FileWriter(file)){
@@ -38,8 +46,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             exp.getMessage();
         }
     }
-    public static FileBackedTasksManager loadFromFile(File file){
-        TaskManager taskManager = new FileBackedTasksManager(file);
+    public static FileBackedTasksManager loadFromFile(String fileName){
+        TaskManager taskManager = new FileBackedTasksManager(fileName);
         try(FileReader fileReader = new FileReader(file.getPath())){
             BufferedReader bufferedReader = new BufferedReader(fileReader);
             while (bufferedReader.ready()){
@@ -82,9 +90,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return (FileBackedTasksManager) taskManager;
     }
 
-    public FileBackedTasksManager(File file){
-        this.file = file;
-    }
+
 
     @Override
     public Long addNewEpic(Epic epic){
@@ -134,9 +140,21 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return subtaskArrayList;
     }
 
+    @Override
+    public void updateTask(Task task) {
+        super.updateTask(task);
+        save();
+    }
 
+    @Override
+    public void updateSubtask(Subtask subtask) {
+        super.updateSubtask(subtask);
+        save();
+    }
 
-
-
-
+    @Override
+    public void updateEpic(Epic epic) {
+        super.updateEpic(epic);
+        save();
+    }
 }

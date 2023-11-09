@@ -10,12 +10,12 @@ import java.io.File;
 import static org.junit.jupiter.api.Assertions.*;
 
 class FileBackedTasksManagerUnitTest extends TaskManagerTest {
-    private final File file  = new File("test.txt");
-    private final FileBackedTasksManager fileBackedTasksManager = new FileBackedTasksManager(file);
+    private final String fileName  = "test.txt";
+    private final FileBackedTasksManager fileBackedTasksManager = new FileBackedTasksManager(fileName);
 
 
     @Test
-    public void testLoadFromFile(){
+    public void testLoadFromFile() throws Exception {
         assertTrue(fileBackedTasksManager.getEpics().isEmpty(),"Список не пустой ,внутри что то есть ");
         assertTrue(fileBackedTasksManager.getTasks().isEmpty(),"Список не пустой ,внутри что то есть ");
         assertTrue(fileBackedTasksManager.getSubtasks().isEmpty(),"Список не пустой ,внутри что то есть ");
@@ -26,7 +26,7 @@ class FileBackedTasksManagerUnitTest extends TaskManagerTest {
         assertFalse(fileBackedTasksManager.getTasks().isEmpty(),"Список пуст");
         assertFalse(fileBackedTasksManager.getEpics().isEmpty(),"Список пуст");
 
-        FileBackedTasksManager fileBackedTasksManager1 = FileBackedTasksManager.loadFromFile(file);
+        FileBackedTasksManager fileBackedTasksManager1 = FileBackedTasksManager.loadFromFile(fileName);
         boolean epicMap =fileBackedTasksManager1.getEpics().equals(fileBackedTasksManager.getEpics());
         boolean subMap = fileBackedTasksManager1.getSubtasks().equals(fileBackedTasksManager.getSubtasks());
         boolean taskMap = fileBackedTasksManager1.getTasks().equals(fileBackedTasksManager.getTasks());
