@@ -1,15 +1,13 @@
 package ru.practicum.task_tracker.server;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonSyntaxException;
+import com.google.gson.*;
+import ru.practicum.task_tracker.server.adapter.*;
 import ru.practicum.task_tracker.manager.FileBackedTasksManager;
 import ru.practicum.task_tracker.tasks.Epic;
 import ru.practicum.task_tracker.tasks.Subtask;
 import ru.practicum.task_tracker.tasks.Task;
 
 import java.net.URI;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class HttpTaskManager extends FileBackedTasksManager {
@@ -17,8 +15,12 @@ public class HttpTaskManager extends FileBackedTasksManager {
     private final URI uri;
     private final KVTaskClient kvTaskClient;
     private final Gson gson = new GsonBuilder()
-            .serializeNulls()
-            .registerTypeAdapter(LocalDateTime.class,new LocalDateTimeAdapter())
+            .registerTypeAdapter(Task.class,new TaskSerializer())
+            .registerTypeAdapter(Task.class,new TaskDeserialize())
+            .registerTypeAdapter(Epic.class,new EpicSerializer())
+            .registerTypeAdapter(Epic.class,new EpicDeserialize())
+            .registerTypeAdapter(Subtask.class,new SubtaskSerializer())
+            .registerTypeAdapter(Subtask.class,new SubtaskDeserialize())
             .create();
     public HttpTaskManager(String uri)  {
         super(uri);

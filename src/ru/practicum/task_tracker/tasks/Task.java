@@ -54,6 +54,10 @@ public class Task {
         this.startTime = startTime;
     }
 
+    public void setType(TaskType type) {
+        this.type = type;
+    }
+
     private long generateId(){
 
         return ++countId;

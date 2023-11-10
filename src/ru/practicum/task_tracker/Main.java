@@ -48,12 +48,13 @@ public class Main {
         Subtask subtask7 = new Subtask("Subtask6 создания ","Написать  ",epic4Id,null,40);
         Long subtaskId7 = taskManager.addSubtask(subtask7);
 
+        System.out.println(taskManager.getTaskById(taskId1));
         Epic epic = taskManager.getEpicById(epic1Id);
         System.out.println(epic);
         System.out.println(taskManager.gettingSubtaskFromEpic(epic2Id));
         System.out.println(taskManager.getSubtaskById(subtaskId1));
-        System.out.println(taskManager.getTaskById(taskId1));
         System.out.println(taskManager.getTaskById(taskId2));
+        System.out.println(taskManager.getPrioritizedTasks());
 
 
     }

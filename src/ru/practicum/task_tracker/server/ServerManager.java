@@ -10,6 +10,7 @@ import ru.practicum.task_tracker.enumereits.Endpoint;
 import ru.practicum.task_tracker.manager.FileBackedTasksManager;
 
 import ru.practicum.task_tracker.manager.TaskManager;
+import ru.practicum.task_tracker.server.adapter.*;
 import ru.practicum.task_tracker.tasks.Epic;
 import ru.practicum.task_tracker.tasks.Subtask;
 import ru.practicum.task_tracker.tasks.Task;
@@ -46,8 +47,12 @@ public class ServerManager {
 
         private final TaskManager fileBackedTasksManager = FileBackedTasksManager.loadFromFile("task.txt");
         private final Gson gson = new GsonBuilder()
-                .serializeNulls()
-                .registerTypeAdapter(LocalDateTime.class,new LocalDateTimeAdapter())
+                .registerTypeAdapter(Task.class,new TaskSerializer())
+                .registerTypeAdapter(Task.class,new TaskDeserialize())
+                .registerTypeAdapter(Epic.class,new EpicSerializer())
+                .registerTypeAdapter(Epic.class,new EpicDeserialize())
+                .registerTypeAdapter(Subtask.class,new SubtaskSerializer())
+                .registerTypeAdapter(Subtask.class,new SubtaskDeserialize())
                 .create();
 
         @Override
