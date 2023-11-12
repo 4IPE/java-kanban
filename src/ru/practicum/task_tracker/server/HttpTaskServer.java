@@ -164,6 +164,7 @@ public class HttpTaskServer {
                     break;
 
                 case UNKNOWN:
+                    writeResponse(exchange,"Необработанный метод - "+exchange.getRequestMethod(),400);
                     break;
 
             }
