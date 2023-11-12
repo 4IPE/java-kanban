@@ -1,9 +1,10 @@
 package ru.practicum.task_tracker.Test;
 
 
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.practicum.task_tracker.manager.FileBackedTasksManager;
-
 
 
 
@@ -11,25 +12,29 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class FileBackedTasksManagerUnitTest extends TaskManagerTest {
     private final String fileName  = "test.txt";
-    private final FileBackedTasksManager fileBackedTasksManager = new FileBackedTasksManager(fileName);
+
+    @BeforeEach
+    public void beforeEach(){
+        taskManager = new FileBackedTasksManager(fileName);
+    }
 
 
     @Test
     public void testLoadFromFile() {
-        assertTrue(fileBackedTasksManager.getEpics().isEmpty(),"Список не пустой ,внутри что то есть ");
-        assertTrue(fileBackedTasksManager.getTasks().isEmpty(),"Список не пустой ,внутри что то есть ");
-        assertTrue(fileBackedTasksManager.getSubtasks().isEmpty(),"Список не пустой ,внутри что то есть ");
+        assertTrue(taskManager.getEpics().isEmpty(),"Список не пустой ,внутри что то есть ");
+        assertTrue(taskManager.getTasks().isEmpty(),"Список не пустой ,внутри что то есть ");
+        assertTrue(taskManager.getSubtasks().isEmpty(),"Список не пустой ,внутри что то есть ");
 
-        fileBackedTasksManager.addTask(task);
-        fileBackedTasksManager.addNewEpic(epic);
+        taskManager.addTask(task);
+        taskManager.addNewEpic(epic);
 
-        assertFalse(fileBackedTasksManager.getTasks().isEmpty(),"Список пуст");
-        assertFalse(fileBackedTasksManager.getEpics().isEmpty(),"Список пуст");
+        assertFalse(taskManager.getTasks().isEmpty(),"Список пуст");
+        assertFalse(taskManager.getEpics().isEmpty(),"Список пуст");
 
         FileBackedTasksManager fileBackedTasksManager1 = FileBackedTasksManager.loadFromFile(fileName);
-        boolean epicMap =fileBackedTasksManager1.getEpics().equals(fileBackedTasksManager.getEpics());
-        boolean subMap = fileBackedTasksManager1.getSubtasks().equals(fileBackedTasksManager.getSubtasks());
-        boolean taskMap = fileBackedTasksManager1.getTasks().equals(fileBackedTasksManager.getTasks());
+        boolean epicMap =fileBackedTasksManager1.getEpics().equals(taskManager.getEpics());
+        boolean subMap = fileBackedTasksManager1.getSubtasks().equals(taskManager.getSubtasks());
+        boolean taskMap = fileBackedTasksManager1.getTasks().equals(taskManager.getTasks());
         assertTrue(epicMap&&subMap&&taskMap,"Ошибка в чтении файла ");
 
         Throwable except = assertThrows(NullPointerException.class,()->FileBackedTasksManager.loadFromFile(null));

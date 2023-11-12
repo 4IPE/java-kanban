@@ -16,7 +16,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
        KVServer kvServer = new KVServer();
        kvServer.start();
-        TaskManager taskManager = Manager.getDefault();
+        TaskManager taskManager = Manager.getDefaultHttp();
         Task task1  = new Task("Таск 1","Ну какой то таск ","12.03.2022 22:23",20);
        Long taskId1 = taskManager.addTask(task1);
         Task task2  = new Task("Таск 1","Ну какой то таск ",null,20);
@@ -55,6 +55,7 @@ public class Main {
         System.out.println(taskManager.getSubtaskById(subtaskId1));
         System.out.println(taskManager.getTaskById(taskId2));
         System.out.println(taskManager.getPrioritizedTasks());
+
 
 
     }

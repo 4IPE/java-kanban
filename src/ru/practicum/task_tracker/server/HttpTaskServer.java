@@ -7,8 +7,9 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import ru.practicum.task_tracker.enumereits.Endpoint;
-import ru.practicum.task_tracker.manager.FileBackedTasksManager;
 
+
+import ru.practicum.task_tracker.manager.Manager;
 import ru.practicum.task_tracker.manager.TaskManager;
 import ru.practicum.task_tracker.server.adapter.*;
 import ru.practicum.task_tracker.tasks.Epic;
@@ -22,17 +23,17 @@ import java.net.InetSocketAddress;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Optional;
 
-public class ServerManager {
+public class HttpTaskServer {
 
     private final static int PORT = 8080;
     private final static Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
 
 
-    public ServerManager()throws IOException{
+    public HttpTaskServer()throws IOException{
+        new KVServer().start();
         HttpServer httpServer = HttpServer.create();
         httpServer.bind(new InetSocketAddress(PORT),0);
         httpServer.createContext("/tasks",new TaskHandler());
@@ -45,7 +46,7 @@ public class ServerManager {
 
     static class TaskHandler implements HttpHandler {
 
-        private final TaskManager fileBackedTasksManager = FileBackedTasksManager.loadFromFile("task.txt");
+        private final TaskManager httpManager = Manager.getDefaultHttp();
         private final Gson gson = new GsonBuilder()
                 .registerTypeAdapter(Task.class,new TaskSerializer())
                 .registerTypeAdapter(Task.class,new TaskDeserialize())
@@ -62,11 +63,11 @@ public class ServerManager {
 
             switch (endpoint){
                 case GET_HISTORY:
-                    String responseHistory = gson.toJson(fileBackedTasksManager.getHistory());
+                    String responseHistory = gson.toJson(httpManager.getHistory());
                     writeResponse(exchange,responseHistory,200);
                     break;
                 case GET_ID:
-                    Task task =  fileBackedTasksManager.getTaskById(getTaskId(path).get());
+                    Task task =  httpManager.getTaskById(getTaskId(path).get());
                     if(task==null){
                         writeResponse(exchange,"Такого таска не существует",400);
                     }
@@ -75,24 +76,24 @@ public class ServerManager {
                     break;
 
                 case GET_EPIC:
-                    String responseEpics = gson.toJson(fileBackedTasksManager.getEpics());
+                    String responseEpics = gson.toJson(httpManager.getEpics());
                     writeResponse(exchange,responseEpics,200);
                     break;
 
                 case GET_TASK:
-                        String responseTasks = gson.toJson(fileBackedTasksManager.getTasks());
+                        String responseTasks = gson.toJson(httpManager.getTasks());
                         writeResponse(exchange,responseTasks,200);
 
                 case GET_TASKS:
-                    String response =gson.toJson(fileBackedTasksManager.getPrioritizedTasks());
+                    String response =gson.toJson(httpManager.getPrioritizedTasks());
                     writeResponse(exchange,response,200);
 
                 case GET_SUBTASK:
-                    String responseSubtasks = gson.toJson(fileBackedTasksManager.getSubtasks());
+                    String responseSubtasks = gson.toJson(httpManager.getSubtasks());
                     writeResponse(exchange,responseSubtasks,200);
 
                 case GET_EPIC_ID:
-                    Epic epic =  fileBackedTasksManager.getEpicById(getTaskId(path).get());
+                    Epic epic =  httpManager.getEpicById(getTaskId(path).get());
                     if(epic==null){
                         writeResponse(exchange,"Такого эпика не существует",400);
                     }
@@ -101,7 +102,7 @@ public class ServerManager {
                     break;
 
                 case GET_SUBTASK_ID:
-                    Subtask subtask =  fileBackedTasksManager.getSubtaskById(getTaskId(path).get());
+                    Subtask subtask =  httpManager.getSubtaskById(getTaskId(path).get());
                     if(subtask==null){
                         writeResponse(exchange,"Такого сабтаска не существует",400);
                     }
@@ -110,7 +111,7 @@ public class ServerManager {
                     break;
 
                 case GET_SUBTASK_EPIC:
-                    ArrayList<Subtask> subtaskArrayList = fileBackedTasksManager.gettingSubtaskFromEpic(getTaskId(path).get());
+                    ArrayList<Subtask> subtaskArrayList = httpManager.gettingSubtaskFromEpic(getTaskId(path).get());
                     if(subtaskArrayList==null){
                         writeResponse(exchange,"Такого эпика не существует",400);
                     }
@@ -131,34 +132,34 @@ public class ServerManager {
                     break;
 
                 case DELETE_TASK:
-                    fileBackedTasksManager.deleteAllTask();
+                    httpManager.deleteAllTask();
                     writeResponse(exchange,"Все таски были успешно удалены!",200);
                     break;
 
                 case DELETE_EPIC_ID:
-                    Epic epicDel = fileBackedTasksManager.getEpicById(getTaskId(path).get());
+                    Epic epicDel = httpManager.getEpicById(getTaskId(path).get());
                     if(epicDel==null){
                         writeResponse(exchange,"Такого эпика не существует",400);
                     }
-                    fileBackedTasksManager.deleteByIndexEpic(epicDel.getId());
+                    httpManager.deleteByIndexEpic(epicDel.getId());
                     writeResponse(exchange,"Эпик был успешно удален",200);
                     break;
 
                 case DELETE_TASK_ID:
-                    Task taskDel = fileBackedTasksManager.getTaskById(getTaskId(path).get());
+                    Task taskDel = httpManager.getTaskById(getTaskId(path).get());
                     if(taskDel==null){
                         writeResponse(exchange,"Такого таска не существует",400);
                     }
-                    fileBackedTasksManager.deleteByIndexEpic(taskDel.getId());
+                    httpManager.deleteByIndexEpic(taskDel.getId());
                     writeResponse(exchange,"Таск был успешно удален",200);
                     break;
 
                 case DELETE_SUBTASK_ID:
-                    Subtask subtaskDel = fileBackedTasksManager.getSubtaskById(getTaskId(path).get());
+                    Subtask subtaskDel = httpManager.getSubtaskById(getTaskId(path).get());
                     if(subtaskDel==null){
                         writeResponse(exchange,"Такого сабтаска не существует",400);
                     }
-                    fileBackedTasksManager.deleteByIndexEpic(subtaskDel.getId());
+                    httpManager.deleteByIndexEpic(subtaskDel.getId());
                     writeResponse(exchange,"Сабтаск был успешно удален",200);
                     break;
 
@@ -281,11 +282,11 @@ public class ServerManager {
                 if(epic.getName().isEmpty()&&epic.getId()==0){
                     writeResponse(exchange,"Name и id не может быть пустым",400);
                 }
-                if(fileBackedTasksManager.getEpics().containsKey(epic.getId())){
-                    fileBackedTasksManager.updateEpic(epic);
+                if(httpManager.getEpics().containsKey(epic.getId())){
+                    httpManager.updateEpic(epic);
                     writeResponse(exchange,"Сабтаск был обновлен",200);
                 }
-                fileBackedTasksManager.addNewEpic(epic);
+                httpManager.addNewEpic(epic);
                 writeResponse(exchange,"Эпик был добавлен",200);
             }
             catch (IllegalArgumentException exception){
@@ -306,11 +307,11 @@ public class ServerManager {
                 if(subtask.getName().isEmpty()&&subtask.getId()==0){
                     writeResponse(exchange,"Name и id не может быть пустым",400);
                 }
-                if(fileBackedTasksManager.getSubtasks().containsKey(subtask.getId())){
-                    fileBackedTasksManager.updateSubtask(subtask);
+                if(httpManager.getSubtasks().containsKey(subtask.getId())){
+                    httpManager.updateSubtask(subtask);
                     writeResponse(exchange,"Сабтаск был обновлен",200);
                 }
-                fileBackedTasksManager.addSubtask(subtask);
+                httpManager.addSubtask(subtask);
                 writeResponse(exchange,"Сабтаск был добавлен",200);
 
             }
@@ -332,11 +333,11 @@ public class ServerManager {
                 if(task.getName().isEmpty()&&task.getId()<=0){
                     writeResponse(exchange,"Name и id не может быть пустым",400);
                 }
-                if(fileBackedTasksManager.getTasks().containsKey(task.getId())){
-                    fileBackedTasksManager.updateTask(task);
+                if(httpManager.getTasks().containsKey(task.getId())){
+                    httpManager.updateTask(task);
                     writeResponse(exchange,"Таск был обновлен",200);
                 }
-                fileBackedTasksManager.addTask(task);
+                httpManager.addTask(task);
                 writeResponse(exchange,"Таск был добавлен",200);
             }
             catch (IllegalArgumentException exception){

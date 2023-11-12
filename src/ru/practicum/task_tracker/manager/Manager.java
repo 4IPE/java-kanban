@@ -6,8 +6,11 @@ import ru.practicum.task_tracker.server.HttpTaskManager;
 
 public class Manager {
 
+    public static TaskManager getDefaultHttp(){
+        return new HttpTaskManager("http://localhost:8078");
+    }
     public static TaskManager getDefault(){
-        return new HttpTaskManager("http://localhost:8080");
+        return new InMemoryTaskManager();
     }
 
     public static HistoryManager getDefaultHistoryManager(){

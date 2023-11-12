@@ -45,7 +45,7 @@ class HistoryManagerTest {
         assertEquals(subtask, history.get(1), "Очередность истории неправильная.");
         assertEquals(epic, history.get(0), "Очередность истории неправильная.");
 
-        // дублирование
+
         historyManager.addTask(task);
         history = historyManager.getHistory();
 

@@ -70,6 +70,7 @@ public class HttpTaskManager extends FileBackedTasksManager {
 
     @Override
     public Task getTaskById(long id) {
+        super.getTaskById(id);
         try {
            return gson.fromJson(kvTaskClient.load(String.valueOf(id)),Task.class);
         } catch (Exception e) {
@@ -80,6 +81,7 @@ public class HttpTaskManager extends FileBackedTasksManager {
 
     @Override
     public Epic getEpicById(long id) {
+        super.getEpicById(id);
         try {
             return gson.fromJson(kvTaskClient.load(String.valueOf(id)),Epic.class);
         } catch (JsonSyntaxException e){
@@ -92,6 +94,7 @@ public class HttpTaskManager extends FileBackedTasksManager {
 
     @Override
     public Subtask getSubtaskById(long id) {
+        super.getSubtaskById(id);
         try {
            return gson.fromJson(kvTaskClient.load(String.valueOf(id)),Subtask.class);
         }  catch (JsonSyntaxException e){
@@ -104,6 +107,7 @@ public class HttpTaskManager extends FileBackedTasksManager {
 
     @Override
     public ArrayList<Subtask> gettingSubtaskFromEpic(long epicId) {
+        super.gettingSubtaskFromEpic(epicId);
         try {
             ArrayList<Long> arrayListId = gson.fromJson(kvTaskClient.load(String.valueOf(epicId)),Epic.class).getSubtaskIds();
             ArrayList<Subtask> subtasks = new ArrayList<>();
@@ -122,6 +126,7 @@ public class HttpTaskManager extends FileBackedTasksManager {
 
     @Override
     public void updateTask(Task task) {
+        super.updateTask(task);
         try {
             kvTaskClient.put(String.valueOf(task.getId()),gson.toJson(task));
         }  catch (JsonSyntaxException e){
@@ -133,6 +138,7 @@ public class HttpTaskManager extends FileBackedTasksManager {
 
     @Override
     public void updateSubtask(Subtask subtask) {
+        super.updateSubtask(subtask);
         try {
             kvTaskClient.put(String.valueOf(subtask.getId()),gson.toJson(subtask));
         } catch (Exception e) {
@@ -142,6 +148,7 @@ public class HttpTaskManager extends FileBackedTasksManager {
 
     @Override
     public void updateEpic(Epic epic) {
+        super.updateEpic(epic);
         try {
             kvTaskClient.put(String.valueOf(epic.getId()),gson.toJson(epic));
         } catch (Exception e) {

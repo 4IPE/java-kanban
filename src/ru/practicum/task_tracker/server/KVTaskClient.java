@@ -33,7 +33,7 @@ public class KVTaskClient {
         HttpClient client = HttpClient.newHttpClient();
         HttpResponse.BodyHandler<String> handler =HttpResponse.BodyHandlers.ofString();
         HttpResponse<String> response = client.send(request,handler) ;
-        System.out.println(response.body());
+
     }
 
     public String load(String key) throws Exception{

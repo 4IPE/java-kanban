@@ -63,20 +63,20 @@ public class InMemoryHistoryManager implements HistoryManager{
         taskTreeSet.addAll(historyArr);
         return taskTreeSet;
     }
-    static class DateTimeComparator implements Comparator<Task> { // на месте T - класс Item
+    static class DateTimeComparator implements Comparator<Task> {
 
         @Override
         public int compare(Task task1, Task task2) {
 
-            // сравниваем товары — более дорогой должен быть дальше в списке
+
             if (task1.getStartTime().isBefore(task2.getStartTime())) {
                 return 1;
 
-                // более дешёвый — ближе к началу списка
+
             } else if (task1.getStartTime().isAfter(task2.getStartTime())) {
                 return -1;
 
-                // если стоимость равна, нужно вернуть 0
+
             } else {
                 return 0;
             }

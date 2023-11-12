@@ -106,6 +106,9 @@ public class InMemoryTaskManager implements TaskManager {
                 List<Subtask> sortSubtask = new ArrayList<>();
                 int maxDuration  = 0;
                for(Long id :epic.getSubtaskIds()){
+                   if(subtasks.get(id)==null){
+                       continue;
+                   }
                    Subtask subtask =subtasks.get(id);
                    sortSubtask.add(subtask);
                    if(subtask.getDuration()>maxDuration){
@@ -113,14 +116,16 @@ public class InMemoryTaskManager implements TaskManager {
                    }
 
                }
-                sortSubtask.sort(dateTimeComparator);
-                if (sortSubtask.get(0).getStartTime() != null) {
-                    epic.setStartTime(sortSubtask.get(0).getStartTime());
-                }
-                if (sortSubtask.get(0).getEndTime() != null) {
-                    epic.setEndTime(sortSubtask.get(0).getEndTime().plus(maxDuration, ChronoUnit.MINUTES));
-                }
-                epic.setDuration(maxDuration);
+               if(!sortSubtask.isEmpty()) {
+                   sortSubtask.sort(dateTimeComparator);
+                   if (sortSubtask.get(0).getStartTime() != null) {
+                       epic.setStartTime(sortSubtask.get(0).getStartTime());
+                   }
+                   if (sortSubtask.get(0).getEndTime() != null) {
+                       epic.setEndTime(sortSubtask.get(0).getEndTime().plus(maxDuration, ChronoUnit.MINUTES));
+                   }
+                   epic.setDuration(maxDuration);
+               }
                 return;
 
             }
@@ -148,7 +153,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Long addSubtask(Subtask subtask){
         Epic epic = epics.get(subtask.getEpicId());
-        if (epics==null){
+        if (epic==null){
             return null;
         }
 
@@ -222,6 +227,7 @@ public class InMemoryTaskManager implements TaskManager {
             subtasks.put(subtask.getId(),subtask);
             updateStatusEpic(subtask.getEpicId());
             calculationEndTime(epics.get(subtask.getEpicId()));
+            calculationEndTime(subtask);
 
             if(subtask.getStartTime()!=null && epics.get(subtask.getEpicId())!=null) {
                 dateTimesTasks.add(subtask.getStartTime());
@@ -371,7 +377,6 @@ public class InMemoryTaskManager implements TaskManager {
 
     }
 
-    //COMPARATORS
     static class DateTimeSubtaskComparator implements Comparator<Subtask> {
 
         @Override

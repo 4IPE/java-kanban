@@ -1,7 +1,8 @@
 package ru.practicum.task_tracker.manager;
 
 
-import ru.practicum.task_tracker.server.ServerManager;
+
+import ru.practicum.task_tracker.server.HttpTaskServer;
 import ru.practicum.task_tracker.tasks.Epic;
 import ru.practicum.task_tracker.tasks.Subtask;
 import ru.practicum.task_tracker.tasks.Task;
@@ -43,7 +44,7 @@ public class FileBackedTasksManagerTest {
         taskManager.getEpicById(3);
         taskManager.getEpicById(4);
 
-        ServerManager serverManager = new ServerManager();
+        HttpTaskServer server = new HttpTaskServer();
 
     }
 }

@@ -3,8 +3,7 @@ package ru.practicum.task_tracker.server.adapter;
 import com.google.gson.*;
 import ru.practicum.task_tracker.enumereits.TaskStatus;
 import ru.practicum.task_tracker.enumereits.TaskType;
-import ru.practicum.task_tracker.tasks.Epic;
-import ru.practicum.task_tracker.tasks.Subtask;
+
 import ru.practicum.task_tracker.tasks.Task;
 
 import java.lang.reflect.Type;
